@@ -36,7 +36,7 @@ export default async function midiToWavHandler(req, res) {
       const filePath = join(publicPath, "prog.mid");
 
       const midiFilePath = "public/prog.mid";
-      const soundFontFilePath = "public/SGM-V2.01.sf2";
+      const soundFontFilePath = "public/SGM-V2.01.sf2"; //file is too large to upload to GitHub
       const outputWavFilePath = "public/prog.wav";
 
       await writeFile(
