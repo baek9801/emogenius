@@ -1,2 +1,1 @@
-public/SGM-V2.01.sf2 filter=lfs diff=lfs merge=lfs -text
 *.sf2 filter=lfs diff=lfs merge=lfs -text
