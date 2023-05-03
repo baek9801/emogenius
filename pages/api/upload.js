@@ -52,7 +52,7 @@ const handler = nextConnect()
           .outputOptions("-map 1:a:0") // Map additional audio from second input
           //.outputOptions("-filter_complex [1:a][0:a]amerge=inputs=2[a]") // Merge original and additional audio
           .outputOptions(
-            "-filter_complex [0:a]volume=0.5[original];[1:a][original]amerge=inputs=2[a]"
+            "-filter_complex [1:a]atempo=1.25[audio_stretched];[0:a]volume=0.3[original];[audio_stretched][original]amerge=inputs=2[a]"
           ) // Reduce original audio volume by 50% and merge with additional audio
 
           .outputOptions("-map [a]") // Map merged audio
@@ -81,7 +81,7 @@ const handler = nextConnect()
         fsPromises.unlink(tempVideoInputFile),
         fsPromises.unlink(tempAudioInputFile),
         fsPromises.unlink(tempOutputFile),
-        fsPromises.unlink(tempMidiFile),
+        //fsPromises.unlink(tempMidiFile),
       ]);
     } catch (error) {
       console.error("Error: ", error.message);

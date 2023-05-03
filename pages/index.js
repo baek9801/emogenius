@@ -152,6 +152,7 @@ const Home = () => {
       <MagentaPlayer
         setProcessState={setProcessState}
         startLoading={startLoading}
+        emotions={[0, 1]}
       />
       <div>
         <div className="text-3xl text-bold">{showState()}</div>
