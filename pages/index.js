@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import MagentaPlayer from "./newMagenta";
+import MagentaPlayer from "@/components/magentaPlayer";
 import { useRouter } from "next/router";
 
-const Home = () => {
+export default function Home() {
   const [waiting, loading, processing, generated] = [0, 1, 2, 3];
   const [processState, setProcessState] = useState(waiting);
   const [startLoading, setStartLoading] = useState(false);
@@ -25,7 +25,7 @@ const Home = () => {
     }
   }, [thumbnailUrl]);
 
-  const drawThumbnail = () => {
+  function drawThumbnail() {
     if (videoRef.current && canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
       canvasRef.current.width = videoRef.current.videoWidth;
@@ -38,91 +38,92 @@ const Home = () => {
         canvasRef.current.height
       );
     }
-  };
-
-  const process = async () => {
-    const formData = new FormData();
-
-    formData.append("video", fileInputRef.current.files[0]);
-
-    console.log(fileInputRef.current.files[0]);
-
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("An error occurred during the file upload");
-      } else {
-        setProcessState(generated);
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute(
-        "download",
-        `output_${fileInputRef.current.files[0].name}`
-      );
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred during the file upload");
-    }
-  };
+  }
 
   useEffect(() => {
+    async function process() {
+      const formData = new FormData();
+      formData.append("video", fileInputRef.current.files[0]);
+
+      try {
+        const response = await fetch("/api/synthesize", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error("An error occurred during the file upload");
+        } else {
+          setProcessState(generated);
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+          "download",
+          `output_${fileInputRef.current.files[0].name}`
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      } catch (error) {
+        console.error(error);
+        console.log("An error occurred during the file upload");
+      }
+    }
     if (processState === processing) {
       process();
     }
   }, [processState]);
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+  async function handleFormSubmit(event) {
+    event.preventDefault();
     if (!fileInputRef.current.files[0]) {
       alert("Please select a file to upload");
+    } else {
+      setProcessState(loading);
+      setStartLoading(true);
     }
-    setProcessState(loading);
-    setStartLoading(true);
-  };
+  }
 
-  const handleDragOver = (event) => {
+  function handleDragOver(event) {
     event.preventDefault();
     event.dataTransfer.dropEffect = "copy";
-  };
+  }
 
-  const handleDrop = (event) => {
+  function handleDrop(event) {
     event.preventDefault();
-    if (event.dataTransfer.files.length > 0) {
-      fileInputRef.current.files = event.dataTransfer.files;
-      setFileName(event.dataTransfer.files[0].name);
-      setThumbnailUrl(URL.createObjectURL(event.dataTransfer.files[0]));
-      setGotVideo(false);
+    if (event.dataTransfer.files.length === 0) return;
+    const file = event.dataTransfer.files[0];
+    const extension = file.name.split(".").pop().toLowerCase();
+    if (extension !== "mp4") {
+      alert("Please upload an MP4 file");
+      return;
     }
-  };
+    fileInputRef.current.files = event.dataTransfer.files;
+    setFileName(event.dataTransfer.files[0].name);
+    setThumbnailUrl(URL.createObjectURL(event.dataTransfer.files[0]));
+    setGotVideo(false);
+  }
 
-  const handleFileChange = (event) => {
+  function handleFileChange(event) {
     if (event.target.files.length > 0) {
       setFileName(event.target.files[0].name);
       setThumbnailUrl(URL.createObjectURL(event.target.files[0]));
       setGotVideo(false);
     }
-  };
+  }
 
-  const handleClick = () => {
+  function handleClick(event) {
     fileInputRef.current.click();
-  };
+  }
 
-  const showState = () => {
+  function showState() {
     switch (processState) {
       case waiting:
         return <div>Select Your MP4 File</div>;
-        break;
       case loading:
         return (
           <div className="flex justify-center">
@@ -130,7 +131,6 @@ const Home = () => {
             <div className="spinner" />
           </div>
         );
-        break;
       case processing:
         return (
           <div className="flex justify-center">
@@ -138,21 +138,19 @@ const Home = () => {
             <div className="spinner" />
           </div>
         );
-        break;
       case generated:
         return <div>Check your output file!</div>;
-        break;
       default:
         return <div>something went wrong!</div>;
     }
-  };
+  }
 
   return (
     <div className="flex-r">
       <MagentaPlayer
         setProcessState={setProcessState}
         startLoading={startLoading}
-        emotions={[0, 1]}
+        emotions={[0, 1, 2, 3, 4, 5, 6]}
       />
       <div>
         <div className="text-3xl text-bold">{showState()}</div>
@@ -226,6 +224,4 @@ const Home = () => {
       </div>
     </div>
   );
-};
-
-export default Home;
+}

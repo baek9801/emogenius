@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }) {
   return (
     <div
       className="min-h-screen bg-fixed bg-center bg-cover flex items-center justify-center"
@@ -17,5 +17,3 @@ function MyApp({ Component, pageProps }) {
     </div>
   );
 }
-
-export default MyApp;
