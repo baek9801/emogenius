@@ -19,7 +19,7 @@
 
 ## 주요 이슈
 **1. 음악 작곡**<br>
-google의 magenta라는 인공지능 작곡 라이브러리를 이용하였다. music vae모델을 이용한 링크(https://codepen.io/iansimon/details/Bxgbgz)의 코드를 참고하였고 라이브러리 코드를 살펴보며 여러가지 기능을 수정하였는데,
+google의 magenta라는 인공지능 작곡 라이브러리를 이용하였다. music vae모델을 이용한 링크( https://codepen.io/iansimon/details/Bxgbgz )의 코드를 참고하였고 라이브러리 코드를 살펴보며 여러가지 기능을 수정하였는데,
 * react의 useEffect, useState를 이용하여 비동기 실행이 잘 이루어지도록 조정하였고
 * z1과 z2를 interpolate하던 기존 코드를 하나의 z텐서를 이용하도록 수정하였으며
 * note의 instrument와 program인자를 이용해 원하는 악기 소리를 지정할 수 있도록 하였고
